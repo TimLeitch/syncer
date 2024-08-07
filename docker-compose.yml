@@ -1,0 +1,34 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: syncer_backend
+    env_file: .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: syncer_frontend
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    depends_on:
+      - backend
+
+  db:
+    image: nouchka/sqlite3
+    container_name: syncer_db
+    volumes:
+      - syncer_db_data:/var/lib/sqlite3
+
+volumes:
+  syncer_db_data:
